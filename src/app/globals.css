@@ -1,26 +1,99 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-divider: var(--divider);
+  --color-live: var(--live);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  /* FIFA 2026 Light Theme */
+  --primary: #00E5FF; /* Vibrant Cyan */
+  --secondary: #E20074; /* Vibrant Magenta */
+  --accent: #FFD43B;
+  
+  --background: #F8FAFC; 
+  --card: #FFFFFF; 
+  --card-hover: #F1F5F9;
+  
+  --text-primary: #111827; 
+  --text-secondary: #6B7280; 
+  
+  --success: #10B981; 
+  --danger: #EF4444;
+  --warning: #F59E0B;
+  --divider: #E2E8F0;
+  --live: #E20074; /* Magenta live indicator */
+}
+
+.dark {
+  /* FIFA 2026 Dark Theme */
+  --primary: #00E5FF;
+  --secondary: #E20074;
+  --accent: #FFD43B;
+  
+  --background: #0B0C10;
+  --card: #18191E;
+  --card-hover: #222329;
+  
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  
+  --success: #00E5FF;
+  --danger: #FF3B30;
+  --warning: #FFC107;
+  --divider: #26272D;
+  --live: #00E5FF;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--divider);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Strikon Utilities */
+.glass {
+  background: rgba(24, 25, 30, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.strikon-btn {
+  background-color: var(--primary);
+  color: #000000;
+  font-weight: 700;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+.strikon-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
 }
