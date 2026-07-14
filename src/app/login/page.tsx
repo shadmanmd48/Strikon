@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Mail, Lock, Loader2, AlertCircle } from "lucide-react";
@@ -12,8 +12,14 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { login, signup, loginWithGoogle } = useAuth();
+  const { login, signup, loginWithGoogle, loginWithGoogleRedirect, user, isLoading: authLoading } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (user && !authLoading) {
+      router.push("/fifa-2026");
+    }
+  }, [user, authLoading, router]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,9 +64,20 @@ export default function LoginPage() {
       router.push("/fifa-2026");
     } catch (err: any) {
       console.error(err);
-      if (err.code !== 'auth/popup-closed-by-user') {
-        const errorCode = err.code || "";
-        const errorMsg = err.message || "";
+      const errorCode = err.code || "";
+      const errorMsg = err.message || "";
+      
+      // Fallback automatically to Redirect if popup is blocked
+      if (errorCode === 'auth/popup-blocked' || errorMsg.includes('auth/popup-blocked')) {
+        try {
+          setError("Popup was blocked by your browser. Redirecting you to sign in instead...");
+          await loginWithGoogleRedirect();
+          return;
+        } catch (redirectErr: any) {
+          console.error(redirectErr);
+          setError(`Google redirect authentication failed: ${redirectErr.code || redirectErr.message}`);
+        }
+      } else if (err.code !== 'auth/popup-closed-by-user') {
         if (errorCode === "auth/operation-not-allowed" || errorMsg.includes("auth/operation-not-allowed")) {
           setError("Google sign-in is not enabled. Please enable the Google provider in your Firebase Console (Authentication -> Sign-in method).");
         } else {

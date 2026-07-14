@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
   signInWithPopup,
+  signInWithRedirect,
   GoogleAuthProvider,
   User as FirebaseUser
 } from 'firebase/auth';
@@ -23,6 +24,7 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
+  loginWithGoogleRedirect: () => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
 };
@@ -65,12 +67,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signInWithPopup(auth, provider);
   };
 
+  const loginWithGoogleRedirect = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithRedirect(auth, provider);
+  };
+
   const logout = async () => {
     await firebaseSignOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, loginWithGoogle, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, signup, loginWithGoogle, loginWithGoogleRedirect, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
