@@ -10,6 +10,16 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Check for missing keys in client browser console
+if (typeof window !== "undefined") {
+  const missingKeys = Object.entries(firebaseConfig)
+    .filter(([_, value]) => !value)
+    .map(([key]) => key);
+  if (missingKeys.length > 0) {
+    console.warn(`Firebase warning: Missing configuration environment variables in .env.local: ${missingKeys.join(", ")}`);
+  }
+}
+
 // Initialize Firebase only once
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 

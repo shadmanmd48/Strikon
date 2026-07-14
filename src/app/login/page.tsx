@@ -31,15 +31,19 @@ export default function LoginPage() {
     } catch (err: any) {
       console.error(err);
       // Clean up firebase error messages
-      const errorMsg = err.message || "Authentication failed. Please try again.";
-      if (errorMsg.includes("auth/invalid-credential")) {
+      const errorMsg = err.message || "";
+      const errorCode = err.code || "";
+      
+      if (errorCode === "auth/invalid-credential" || errorMsg.includes("auth/invalid-credential")) {
         setError("Invalid email or password.");
-      } else if (errorMsg.includes("auth/email-already-in-use")) {
+      } else if (errorCode === "auth/email-already-in-use" || errorMsg.includes("auth/email-already-in-use")) {
         setError("An account with this email already exists.");
-      } else if (errorMsg.includes("auth/weak-password")) {
+      } else if (errorCode === "auth/weak-password" || errorMsg.includes("auth/weak-password")) {
         setError("Password should be at least 6 characters.");
+      } else if (errorCode === "auth/operation-not-allowed" || errorMsg.includes("auth/operation-not-allowed")) {
+        setError("Authentication provider not enabled. Please enable Email/Password login in your Firebase Console (Authentication -> Sign-in method).");
       } else {
-        setError("Authentication failed. Please check your credentials.");
+        setError(`Authentication failed: ${errorCode || errorMsg || "Please check your credentials."}`);
       }
     } finally {
       setIsLoading(false);
@@ -55,7 +59,13 @@ export default function LoginPage() {
     } catch (err: any) {
       console.error(err);
       if (err.code !== 'auth/popup-closed-by-user') {
-        setError("Google authentication failed.");
+        const errorCode = err.code || "";
+        const errorMsg = err.message || "";
+        if (errorCode === "auth/operation-not-allowed" || errorMsg.includes("auth/operation-not-allowed")) {
+          setError("Google sign-in is not enabled. Please enable the Google provider in your Firebase Console (Authentication -> Sign-in method).");
+        } else {
+          setError(`Google authentication failed: ${errorCode || errorMsg}`);
+        }
       }
     } finally {
       setIsGoogleLoading(false);

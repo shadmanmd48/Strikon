@@ -16,6 +16,7 @@
 }
 
 :root {
+  --font-sans: system-ui, sans-serif;
   /* FIFA 2026 Light Theme */
   --primary: #00E5FF; /* Vibrant Cyan */
   --secondary: #E20074; /* Vibrant Magenta */
